@@ -21,6 +21,10 @@ class AccountController{
         }
     }
 
+    test (req, res) {
+        res.send("Welcome to Registration api.")
+    }
+
     async getAllUser (req, res, next){
         const users = await AccountModel.find({})
         res.json(users)
