@@ -7,6 +7,7 @@ const port = process.env.PORT || 8000;
 //  Enable CORS on Server
 let cors = require("cors");
 app.use(cors());
+app.options('https://api-registration-hagaosp5f-doritran.vercel.app/*', cors())
 
 // Read body post
 app.use(
