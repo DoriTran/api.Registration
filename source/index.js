@@ -17,11 +17,11 @@ app.use(
 app.use(express.json());
 
 //router
-const route = require("./api/routes/index");
+const route = require("./routes/index");
 route(app);
 
 //database
-const db = require("./api/config/db");
+const db = require("./config/db");
 db();
 
 app.listen(port, () => {
