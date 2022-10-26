@@ -9,6 +9,18 @@ let cors = require("cors");
 app.use(cors());
 app.options('*', cors())
 
+/* CROS middleware */
+app.use(function(req, res, next) {
+  // Mọi domain
+  res.header("Access-Control-Allow-Origin", "*");
+ 
+  // Domain nhất định
+  // res.header("Access-Control-Allow-Origin", "domain");
+ 
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // Read body post
 app.use(
   express.urlencoded({
