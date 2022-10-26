@@ -6,8 +6,8 @@ const port = process.env.PORT || 8000;
 
 //  Enable CORS on Server
 let cors = require("cors");
-app.use(cors({origin: `*`}));
-app.options('https://registration-ex4.netlify.app', cors())
+app.use(cors());
+app.options('*', cors())
 
 // Read body post
 app.use(
