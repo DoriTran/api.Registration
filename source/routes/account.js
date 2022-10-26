@@ -2,9 +2,11 @@ const express = require('express')
 const router  = express.Router()
 const AuthController = require('../controllers/AccountController')
 
-// Default password 12345
-router.post('/', AuthController.login)
+// Default password 123456789
+// Route: /account
+router.get('/profile', AuthController.getUser)
 router.get('/getAll', AuthController.getAllUser)
+router.post('/login', AuthController.login)
 router.post('/add', AuthController.addUser)
 
 module.exports = router

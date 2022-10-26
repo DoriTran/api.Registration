@@ -1,32 +1,17 @@
-const UserM = require('../models/Account')
+const AccountModel = require('../models/Account')
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 
 class AccountController{
     async login(req, res , next) {
         const username = req.body?.username
         const password = req.body?.password
-        const user = await UserM.findOne({username: username})
+        console.log(username)
+        console.log(password)
+        const user = await AccountModel.findOne({username: username})
         if (user && await bcrypt.compare(password, user.password)){
-            const token = jwt.sign({
-                data:{
-                    _id: user._id,
-                    username: user.username,
-                    name: user.name,
-                    role: user.role,
-                },
-            }, process.env.TOKEN_SECRET, {
-                expiresIn: 60 * 60 * 24 * 30 * 365,
-            })
-
-            const issuedDatetime = new Date()
-            const expiredDatetime = new Date(issuedDatetime);
-            expiredDatetime.setDate(issuedDatetime.getDate() + 1)
-
             res.status(200).json({
-                AUTH_TOKEN: token,
-                issued: issuedDatetime.toLocaleString(),
-                expired: expiredDatetime.toLocaleString(),
+                username: username,
+                isLoggedIn: true
             })
         }
         else{
@@ -37,36 +22,49 @@ class AccountController{
     }
 
     async getAllUser (req, res, next){
-        const users = await UserM.find({})
+        const users = await AccountModel.find({})
         res.json(users)
+    }
+
+    async getUser (req, res, next){
+        let username = req.query.username
+
+        const user = await AccountModel.findOne({username: username})
+
+        if (!user) {
+            res.status(404).json({message: "Not found"})
+        }
+        else {
+            res.json(user)
+        }
     }
 
     async addUser(req, res , next) {
         const username = req.body?.username
         const password = req.body?.password
-        const name = req.body?.name
-        const isAdmin = false
-        const avatar = "https://shop.phuongdonghuyenbi.vn/wp-content/uploads/avatars/1510/default-avatar-bpthumb.png"
+        const fullname = req.body?.fullname
+        const gender = req.body?.gender
+        const age = req.body?.age
         
         const saltRounds = 12;
         const salt = bcrypt.genSaltSync(saltRounds);
-        const hashPw = bcrypt.hashSync(password, salt);
+        const hashPassword = bcrypt.hashSync(password, salt);
 
-        const user = await UserM.findOne({username: username})
+        const user = await AccountModel.findOne({username: username})
         if (user){
             res.status(401).json({
                 message: "This username already exists",
             })
         } else {
-            await UserM.create({
+            await AccountModel.create({
                 username: username,
-                password: hashPw,
-                name: name,
-                isAdmin: isAdmin,
-                avatar: avatar,
+                password: hashPassword,
+                fullname: fullname,
+                gender: gender,
+                age: age
             }) 
     
-            res.json({message: ` Account ${username} is added successfully`})
+            res.json({username: username, message: ` Account ${username} is added successfully`})
         }
     }
 }
